@@ -429,6 +429,10 @@ fi
 # THIS TABLE IS ALPHA SORTED.  KEEP IT THAT WAY.
 
 case "${host}" in
+  *-*-anos*)
+    syscall_dir=anos
+	newlib_cflags="${newlib_cflags} -ffunction-sections -fdata-sections"
+	;;
   *-*-cygwin*)
 	posix_dir=posix
 	xdr_dir=xdr
@@ -598,6 +602,10 @@ esac
 # THIS TABLE IS ALPHA SORTED.  KEEP IT THAT WAY.
 
 case "${host}" in
+  *-*-anos*)
+    newlib_cflags="${newlib_cflags}"
+	syscall_dir=anos
+	;;
   *-*-cygwin*)
 	test -z "$cygwin_srcdir" && cygwin_srcdir="${abs_newlib_basedir}/../winsup/cygwin"
 	export cygwin_srcdir

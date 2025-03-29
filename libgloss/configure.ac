@@ -214,7 +214,7 @@ case "${target}" in
   nios2-*-*)
 	config_nios2=true
 	;;
-  x86_64-*-anos)
+  *-*-anos)
     AC_CONFIG_FILES([anos/Makefile])
 	subdirs="$subdirs anos"
 	;;

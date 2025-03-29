@@ -49,24 +49,24 @@ AS = @AS@
 AR = @AR@
 LD = @LD@
 RANLIB = @RANLIB@
-VASM=vasmm68k_mot
+NASM=nasm
 AR_FLAGS = rc
 
 OBJDUMP = `if [ -f ${objroot}/../binutils/objdump ] ; \
-       then echo ${objroot}/../binutils/objdump ; \
-       else t='$(program_transform_name)'; echo objdump | sed -e $$t ; fi`
+	then echo ${objroot}/../binutils/objdump ; \
+	else t='$(program_transform_name)'; echo objdump | sed -e $$t ; fi`
 OBJCOPY = `if [ -f ${objroot}/../binutils/objcopy ] ; \
-       then echo ${objroot}/../binutils/objcopy ; \
-       else t='$(program_transform_name)'; echo objcopy | sed -e $$t ; fi`
+	then echo ${objroot}/../binutils/objcopy ; \
+	else t='$(program_transform_name)'; echo objcopy | sed -e $$t ; fi`
 
 BSP=   libanos.a
 
 SCRIPTS = anos.ld
 
 SYS_INCLUDES=
-PLAF_INCLUDES=  syscalls.h types.h
+PLAF_INCLUDES=  syscalls.h system.h types.h
 
-OBJS =  syscalls.o
+OBJS =  syscalls.o anos.o sleep.o version.o
 
 GOBJS=
 
@@ -79,38 +79,50 @@ GCRT0= gcrt0.o
 all: $(CRT0) $(BSP)
 
 ${CRT0}: $(srcdir)/crt0.asm
-       $(AS) $(ASFLAGS) -o $@ $<
+	$(AS) $(ASFLAGS) -o $@ $<
 
 ${BSP}: $(OBJS)
-       ${AR} ${ARFLAGS} $@ $(OBJS)
-       ${RANLIB} $@
+	${AR} ${ARFLAGS} $@ $(OBJS)
+	${RANLIB} $@
+
+anos.o: $(srcdir)/anos.asm
+	$(NASM) $(NASM_FLAGS) -f elf64 -F dwarf -g -o $@ $<
+
+crt0.o: $(srcdir)/crt0.asm
+	$(NASM) $(NASM_FLAGS) -f elf64 -F dwarf -g -o $@ $<
+
+sleep.o: $(srcdir)/sleep.c
+	$(CC) $(CFLAGS_FOR_TARGET) -I$(srcdir)/include -O2 -g $(INCLUDES) -ffunction-sections -fdata-sections -c $(CFLAGS) $<
 
 syscalls.o: $(srcdir)/syscalls.c
-       $(CC) $(CFLAGS_FOR_TARGET) -I$(srcdir)/include -O2 -g $(INCLUDES) -ffunction-sections -fdata-sections -c $(CFLAGS) $<
+	$(CC) $(CFLAGS_FOR_TARGET) -I$(srcdir)/include -O2 -g $(INCLUDES) -ffunction-sections -fdata-sections -c $(CFLAGS) $<
+
+version.o: $(srcdir)/version.c
+	$(CC) $(CFLAGS_FOR_TARGET) -I$(srcdir)/include -O2 -g $(INCLUDES) -ffunction-sections -fdata-sections -c $(CFLAGS) $<
 
 install: $($(CPU)_INSTALL)
-       ${mkinstalldirs} ${DESTDIR}${tooldir}/lib${MULTISUBDIR} ${DESTDIR}${tooldir}/include/anos
-       for c in $(CRT0); do \
-         $(INSTALL_DATA) $$c $(DESTDIR)$(tooldir)/lib${MULTISUBDIR}/$$c ; \
-       done;
-       for c in $(SCRIPTS); do \
-         $(INSTALL_DATA) $(srcdir)/$$c $(DESTDIR)$(tooldir)/lib/$$c ; \
-       done;
-       @for bsp in ${BSP}; do\
-        $(INSTALL_PROGRAM) $${bsp} $(DESTDIR)$(tooldir)/lib${MULTISUBDIR}; \
-       done
-       for c in $(SYS_INCLUDES); do \
-         $(INSTALL_DATA) $(srcdir)/include/sys/$$c $(DESTDIR)$(tooldir)/include/sys/$$c ; \
-       done;
-       for c in $(PLAF_INCLUDES); do \
-         $(INSTALL_DATA) $(srcdir)/include/anos/$$c $(DESTDIR)$(tooldir)/include/anos/$$c ; \
-       done;
+	${mkinstalldirs} ${DESTDIR}${tooldir}/lib${MULTISUBDIR} ${DESTDIR}${tooldir}/include/anos
+	for c in $(CRT0); do \
+		$(INSTALL_DATA) $$c $(DESTDIR)$(tooldir)/lib${MULTISUBDIR}/$$c ; \
+	done;
+	for c in $(SCRIPTS); do \
+		$(INSTALL_DATA) $(srcdir)/$$c $(DESTDIR)$(tooldir)/lib/$$c ; \
+	done;
+	@for bsp in ${BSP}; do\
+		$(INSTALL_PROGRAM) $${bsp} $(DESTDIR)$(tooldir)/lib${MULTISUBDIR}; \
+	done
+	for c in $(SYS_INCLUDES); do \
+		$(INSTALL_DATA) $(srcdir)/include/sys/$$c $(DESTDIR)$(tooldir)/include/sys/$$c ; \
+	done;
+	for c in $(PLAF_INCLUDES); do \
+		$(INSTALL_DATA) $(srcdir)/include/anos/$$c $(DESTDIR)$(tooldir)/include/anos/$$c ; \
+	done;
 
 clean mostlyclean:
-       rm -f *.o *.a
+	rm -f *.o *.a
 
 distclean maintainer-clean realclean: clean
-       rm -f Makefile
+	rm -f Makefile
 
 .PHONY: info dvi doc install-info clean-info
 info doc dvi:
@@ -118,4 +130,4 @@ install-info:
 clean-info:
 
 Makefile: Makefile.in ../config.status
-       cd .. && $(SHELL) config.status
+	cd .. && $(SHELL) config.status

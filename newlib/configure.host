@@ -431,7 +431,7 @@ fi
 case "${host}" in
   *-*-anos*)
     syscall_dir=anos
-	newlib_cflags="${newlib_cflags} -ffunction-sections -fdata-sections"
+	newlib_cflags="${newlib_cflags} -ffunction-sections -fdata-sections -mcmodel=large"
 	;;
   *-*-cygwin*)
 	posix_dir=posix

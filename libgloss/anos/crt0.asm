@@ -18,8 +18,6 @@ extern _bss_start, _bss_end               ; Linker defined symbols
 section .text.init                        ; Linker needs to make sure this goes in first...
 
 ; Initialize C-land: Zero BSS, sort out arguments and call main
-;
-; TODO currently, stack **isn't** 16-byte aligned on entry!
 _start:
   mov   rcx,_bss_end                        ; Get end of .bss section (VMA)
   mov   rax,_bss_start                      ; Get start of .bss section (VMA)
@@ -38,12 +36,16 @@ _start:
   jnz   .zero_bss_loop                      ; Loop until CX is zero
 
 .done:
-  sub   rsp,0x8                             ; Hack around TODO at the top of this func...
+  ; Push a NULL frame pointer (and misalign by 8) here.
+  ;
+  xor   rbp, rbp                            ; Zero RBP
+  push  rbp                                 ; Push NULL frame pointer (and misalign by 8)
+  sub   rsp,0x8                             ; Realign stack for before C calls
 
   call  _init                               ; GCC constructors
   mov   rdi, 0                              ; argc = 0
   mov   rsi, EMPTY_ARGS                     ; argv = pointer to null array
-  jmp   main                                ; Let's do some C...  
+  call  main                                ; Let's do some C...  
   call  _fini                               ; GCC destructors
 
   ; TODO we'll go bang here, we need an exit syscall!

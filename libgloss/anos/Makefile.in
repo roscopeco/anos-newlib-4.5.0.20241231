@@ -41,6 +41,8 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SHELL = /bin/sh
 
+SHORT_HASH ?= `git rev-parse --short HEAD`
+
 mkinstalldirs = $(SHELL) $(srcroot)/mkinstalldirs
 
 CC = @CC@
@@ -98,7 +100,7 @@ syscalls.o: $(srcdir)/syscalls.c
 	$(CC) $(CFLAGS_FOR_TARGET) -I$(srcdir)/include -O2 -g $(INCLUDES) -ffunction-sections -fdata-sections -c $(CFLAGS) $<
 
 version.o: $(srcdir)/version.c
-	$(CC) $(CFLAGS_FOR_TARGET) -I$(srcdir)/include -O2 -g $(INCLUDES) -ffunction-sections -fdata-sections -c $(CFLAGS) $<
+	$(CC) -DVERSTR=$(SHORT_HASH) $(CFLAGS_FOR_TARGET) -I$(srcdir)/include -O2 -g $(INCLUDES) -ffunction-sections -fdata-sections -c $(CFLAGS) $<
 
 install: $($(CPU)_INSTALL)
 	${mkinstalldirs} ${DESTDIR}${tooldir}/lib${MULTISUBDIR} ${DESTDIR}${tooldir}/include/anos

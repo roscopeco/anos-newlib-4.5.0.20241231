@@ -1,22 +1,17 @@
 /*
- * ANOS system (usermode manager)
- * Link Script
+ * ANOS usermode program link script
  *
  * (c)2023 Ross Bamford & Contributors
  * See LICENSE.md (spoiler: GPLv2)
- *
- * TODO this is forcing us into an mcmodel=large situation
- * for building the C lib, we should change that (it'll need
- * the unreasonably-large memory regions sorting out, which
- * will need a change in SYSTEM's initial mapping too...)
  */
 
 OUTPUT_FORMAT("elf64-x86-64")
 ENTRY(_start)
 
 MEMORY {
-    CODE    : org = 0x0000000002000000,  l = 0x0040000000     /* 1GiB for server code */
-    DATA    : org = 0x0000000080000000,  l = 0x4000000000     /* 256GiB for bss, stack goes below this */
+    CODE    : org = 0x0000000002000000,  l = 0x003e000000     /* 992MiB for code segment, to 1GiB mark */
+    /* stack goes here - 64MiB from 0x040000000 to 043ffffff */
+    DATA    : org = 0x0000000044000000,  l = 0x007c000000     /* 1.9GiB for bss, 64MiB stack goes below this */
 }
 
 SECTIONS
@@ -43,9 +38,6 @@ SECTIONS
     *(.rodata .rodata.*)
 
     . = ALIGN(16);
-    KEEP(*(.gcc_except_table))
-
-    . = ALIGN(16);
     KEEP(*(.tm_clone_table*))
 
     . = ALIGN(16);
@@ -57,6 +49,21 @@ SECTIONS
     _code_end = .;
   } > CODE
   
+  .eh_frame_hdr : 
+  { 
+    KEEP(*(.eh_frame_hdr))
+  } > CODE
+
+  .eh_frame : ONLY_IF_RO 
+  { 
+    KEEP(*(.eh_frame)) 
+  } > CODE
+
+  .gcc_except_table : ONLY_IF_RO 
+  { 
+    *(.gcc_except_table .gcc_except_table.*) 
+  } > CODE  
+
   .bss (NOLOAD) :
   {
     _bss_start = .;

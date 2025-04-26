@@ -68,7 +68,7 @@ SCRIPTS = anos.ld
 SYS_INCLUDES=
 PLAF_INCLUDES=  syscalls.h system.h types.h
 
-OBJS =  syscalls.o anos.o sleep.o version.o
+OBJS =  syscalls.o anos.o mkdir.o sleep.o version.o
 
 GOBJS=
 
@@ -92,6 +92,9 @@ anos.o: $(srcdir)/anos.asm
 
 crt0.o: $(srcdir)/crt0.asm
 	$(NASM) $(NASM_FLAGS) -f elf64 -F dwarf -g -o $@ $<
+
+mkdir.o: $(srcdir)/mkdir.c
+	$(CC) $(CFLAGS_FOR_TARGET) -I$(srcdir)/include -O2 -g $(INCLUDES) -ffunction-sections -fdata-sections -c $(CFLAGS) $<
 
 sleep.o: $(srcdir)/sleep.c
 	$(CC) $(CFLAGS_FOR_TARGET) -I$(srcdir)/include -O2 -g $(INCLUDES) -ffunction-sections -fdata-sections -c $(CFLAGS) $<

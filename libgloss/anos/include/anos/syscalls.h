@@ -34,6 +34,7 @@
 #define anos_register_channel_name anos_register_channel_name_int
 #define anos_remove_channel_name anos_remove_channel_name_int
 #define anos_find_named_channel anos_find_named_channel_int
+#define anos_kill_current_task anos_kill_current_task_int
 #else
 #define anos_kprint anos_kprint_syscall
 #define anos_kputchar anos_kputchar_syscall
@@ -50,12 +51,8 @@
 #define anos_register_channel_name anos_register_channel_name_syscall
 #define anos_remove_channel_name anos_remove_channel_name_syscall
 #define anos_find_named_channel anos_find_named_channel_syscall
+#define anos_kill_current_task anos_kill_current_task_syscall
 #endif
-
-int anos_testcall_int(uint64_t arg0, uint64_t arg1, uint64_t arg2,
-                      uint64_t arg3, uint64_t arg4);
-int anos_testcall_syscall(uint64_t arg0, uint64_t arg1, uint64_t arg2,
-                          uint64_t arg3, uint64_t arg4);
 
 int anos_kprint_int(const char *msg);
 int anos_kprint_syscall(const char *msg);
@@ -110,5 +107,8 @@ int anos_remove_channel_name_int(char *name);
 
 uint64_t anos_find_named_channel_syscall(char *name);
 uint64_t anos_find_named_channel_int(char *name);
+
+uint64_t anos_kill_current_task_syscall();
+uint64_t anos_kill_current_task_int();
 
 #endif //__ANOS_ANOS_SYSCALLS_H

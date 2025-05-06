@@ -198,3 +198,13 @@ anos_syscall anos_remove_channel_name, 14
 ;
 anos_syscall anos_find_named_channel, 15
 
+; args:
+;   none
+;
+; mods:
+;   rax - noreturn on success, 0 on failure
+;   r11 - trashed
+;   rcx - trashed
+;
+anos_syscall anos_kill_current_task, 16
+

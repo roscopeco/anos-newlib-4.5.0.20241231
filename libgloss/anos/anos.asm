@@ -4,34 +4,30 @@
 ; Copyright (c) 2024 Ross Bamford
 ;
 
+extern __syscall_capabilities
+
+%macro anos_find_call_cap 1
+    ; Find cookie from caps array
+    mov r10, __syscall_capabilities
+    mov r9, r10[%1*8]       ; load cookie into r9
+%endmacro
+
 %macro anos_syscall 2
 global %1_syscall, %1_int
 %1_int:
-    mov r9, %2              ; Call number in r9
+    anos_find_call_cap %2   ; Find capability cookie for call
+
     mov r10, rcx            ; Fourth arg in SysV is rcx, but r10 in syscalls
     int 0x69
     ret
 
 %1_syscall:
-    mov r9, %2
+    anos_find_call_cap %2   ; Find capability for call
+
     mov r10, rcx
     syscall
     ret
 %endmacro
-
-; args:
-;   rdi - arg0
-;   rsi - arg1
-;   rdx - arg2
-;   r10 - arg3
-;   r8  - arg4
-;
-; mods:
-;   rax - result
-;   r11 - trashed
-;   rcx - trashed
-;
-anos_syscall anos_testcall, 0
 
 ; args:
 ;   rdi - message pointer

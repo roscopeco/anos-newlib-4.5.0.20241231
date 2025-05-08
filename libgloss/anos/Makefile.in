@@ -68,7 +68,7 @@ SCRIPTS = anos.ld
 SYS_INCLUDES=
 PLAF_INCLUDES=  syscalls.h system.h types.h
 
-OBJS =  syscalls.o anos.o mkdir.o sleep.o version.o
+OBJS =  syscalls.o anos.o mkdir.o sleep.o version.o capability_init.o
 
 GOBJS=
 
@@ -103,6 +103,9 @@ syscalls.o: $(srcdir)/syscalls.c
 	$(CC) $(CFLAGS_FOR_TARGET) -I$(srcdir)/include -O2 -g $(INCLUDES) -ffunction-sections -fdata-sections -c $(CFLAGS) $<
 
 version.o: $(srcdir)/version.c
+	$(CC) -DVERSTR=$(SHORT_HASH) $(CFLAGS_FOR_TARGET) -I$(srcdir)/include -O2 -g $(INCLUDES) -ffunction-sections -fdata-sections -c $(CFLAGS) $<
+
+capability_init.o: $(srcdir)/capability_init.c
 	$(CC) -DVERSTR=$(SHORT_HASH) $(CFLAGS_FOR_TARGET) -I$(srcdir)/include -O2 -g $(INCLUDES) -ffunction-sections -fdata-sections -c $(CFLAGS) $<
 
 install: $($(CPU)_INSTALL)

@@ -18,6 +18,30 @@
 
 #define MAX_IPC_BUFFER_SIZE ((0x1000))
 
+// NOTE these must be kept in-step with the kernel!
+typedef enum {
+    SYSCALL_ID_INVALID = 0,
+    SYSCALL_ID_DEBUG_PRINT,
+    SYSCALL_ID_DEBUG_CHAR,
+    SYSCALL_ID_CREATE_THREAD,
+    SYSCALL_ID_MEMSTATS,
+    SYSCALL_ID_SLEEP,
+    SYSCALL_ID_CREATE_PROCESS,
+    SYSCALL_ID_MAP_VIRTUAL,
+    SYSCALL_ID_SEND_MESSAGE,
+    SYSCALL_ID_RECV_MESSAGE,
+    SYSCALL_ID_REPLY_MESSAGE,
+    SYSCALL_ID_CREATE_CHANNEL,
+    SYSCALL_ID_DESTROY_CHANNEL,
+    SYSCALL_ID_REGISTER_NAMED_CHANNEL,
+    SYSCALL_ID_DEREGISTER_NAMED_CHANNEL,
+    SYSCALL_ID_FIND_NAMED_CHANNEL,
+    SYSCALL_ID_KILL_CURRENT_TASK,
+
+    // sentinel
+    SYSCALL_ID_END,
+} __attribute__((packed)) SyscallId;
+
 #ifdef DEBUG_INT_SYSCALLS
 #define anos_kprint anos_kprint_int
 #define anos_kputchar anos_kputchar_int
@@ -69,13 +93,8 @@ int anos_get_mem_info_syscall(AnosMemInfo *meminfo);
 int anos_task_sleep_current_syscall(uint64_t ticks);
 int anos_task_sleep_current_int(uint64_t ticks);
 
-int anos_create_process_syscall(uintptr_t stack_base, uint64_t stack_size,
-                                uint64_t region_count,
-                                ProcessMemoryRegion *regions,
-                                uintptr_t entry_point);
-int anos_create_process_int(uintptr_t stack_base, uint64_t stack_size,
-                            uint64_t region_count, ProcessMemoryRegion *regions,
-                            uintptr_t entry_point);
+int anos_create_process_syscall(ProcessCreateParams *params);
+int anos_create_process_int(ProcessCreateParams *params);
 
 void *anos_map_virtual_syscall(uint64_t size, uintptr_t base_address);
 void *anos_map_virtual_int(uint64_t size, uintptr_t base_address);

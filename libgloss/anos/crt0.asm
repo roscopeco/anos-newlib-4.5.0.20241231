@@ -14,6 +14,7 @@ global _start
 
 extern main,_init,_fini
 extern _bss_start, _bss_end               ; Linker defined symbols
+extern _anos_init_capabilities
 
 section .text.init                        ; Linker needs to make sure this goes in first...
 
@@ -26,7 +27,6 @@ _start:
 
   test  rcx,rcx                             ; Do we have zero-size .bss?
   jz    .done                               ; We're done if so...
-  jmp   .done
 
   mov   rbx,_bss_start                      ; bss start (VMA) into rbx
 .zero_bss_loop:
@@ -36,12 +36,17 @@ _start:
   jnz   .zero_bss_loop                      ; Loop until CX is zero
 
 .done:
+  ; Pop capability count and pointer for cap init
+  pop   rdi                                 ; ... count
+  pop   rsi                                 ; ... pointer
+
   ; Push a NULL frame pointer (and misalign by 8) here.
   ;
   xor   rbp, rbp                            ; Zero RBP
   push  rbp                                 ; Push NULL frame pointer (and misalign by 8)
   sub   rsp,0x8                             ; Realign stack for before C calls
 
+  call  _anos_init_capabilities             ; Capability init
   call  _init                               ; GCC constructors
   mov   rdi, 0                              ; argc = 0
   mov   rsi, EMPTY_ARGS                     ; argv = pointer to null array

@@ -5,6 +5,8 @@
  * Copyright (c) 2024 Ross Bamford
  */
 
+#include <anos/syscalls.h>
+
 #include <stddef.h>
 #include <stdint.h>
 #include <stdnoreturn.h>
@@ -28,12 +30,12 @@ int _close(int file) {
 }
 
 int _execve(char *name, char **argv, char **env) {
-    errno = ENOMEM;
+    errno = ENOSYS;
     return -1;
 }
 
 int _fork() {
-    errno = EAGAIN;
+    errno = ENOSYS;
     return -1;
 }
 

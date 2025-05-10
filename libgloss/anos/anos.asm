@@ -204,3 +204,13 @@ anos_syscall anos_find_named_channel, 15
 ;
 anos_syscall anos_kill_current_task, 16
 
+; args:
+;   rdi - size
+;   rsi - virtual_base
+;
+; mods:
+;   rax - result
+;   r11 - trashed
+;   rcx - trashed
+;
+anos_syscall anos_unmap_virtual, 17

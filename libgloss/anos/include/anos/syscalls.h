@@ -37,6 +37,7 @@ typedef enum {
     SYSCALL_ID_DEREGISTER_NAMED_CHANNEL,
     SYSCALL_ID_FIND_NAMED_CHANNEL,
     SYSCALL_ID_KILL_CURRENT_TASK,
+    SYSCALL_ID_UNMAP_VIRTUAL,
 
     // sentinel
     SYSCALL_ID_END,
@@ -59,6 +60,7 @@ typedef enum {
 #define anos_remove_channel_name anos_remove_channel_name_int
 #define anos_find_named_channel anos_find_named_channel_int
 #define anos_kill_current_task anos_kill_current_task_int
+#define anos_unmap_virtual anos_unmap_virtual_int
 #else
 #define anos_kprint anos_kprint_syscall
 #define anos_kputchar anos_kputchar_syscall
@@ -76,6 +78,7 @@ typedef enum {
 #define anos_remove_channel_name anos_remove_channel_name_syscall
 #define anos_find_named_channel anos_find_named_channel_syscall
 #define anos_kill_current_task anos_kill_current_task_syscall
+#define anos_unmap_virtual anos_unmap_virtual_syscall
 #endif
 
 int anos_kprint_int(const char *msg);
@@ -93,8 +96,8 @@ int anos_get_mem_info_syscall(AnosMemInfo *meminfo);
 int anos_task_sleep_current_syscall(uint64_t ticks);
 int anos_task_sleep_current_int(uint64_t ticks);
 
-int anos_create_process_syscall(ProcessCreateParams *params);
-int anos_create_process_int(ProcessCreateParams *params);
+int64_t anos_create_process_syscall(ProcessCreateParams *params);
+int64_t anos_create_process_int(ProcessCreateParams *params);
 
 void *anos_map_virtual_syscall(uint64_t size, uintptr_t base_address);
 void *anos_map_virtual_int(uint64_t size, uintptr_t base_address);
@@ -129,5 +132,8 @@ uint64_t anos_find_named_channel_int(char *name);
 
 uint64_t anos_kill_current_task_syscall();
 uint64_t anos_kill_current_task_int();
+
+int anos_unmap_virtual_syscall(uint64_t size, uintptr_t base_address);
+int anos_unmap_virtual_int(uint64_t size, uintptr_t base_address);
 
 #endif //__ANOS_ANOS_SYSCALLS_H

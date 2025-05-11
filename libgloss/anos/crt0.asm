@@ -40,6 +40,10 @@ _start:
   pop   rdi                                 ; ... count
   pop   rsi                                 ; ... pointer
 
+  ; Pop argc / argv for main (later)
+  pop   r12                                 ; ... argc
+  pop   r13                                 ; ... argv
+
   ; Push a NULL frame pointer (and misalign by 8) here.
   ;
   xor   rbp, rbp                            ; Zero RBP
@@ -48,8 +52,9 @@ _start:
 
   call  _anos_init_capabilities             ; Capability init
   call  _init                               ; GCC constructors
-  mov   rdi, 0                              ; argc = 0
-  mov   rsi, EMPTY_ARGS                     ; argv = pointer to null array
+
+  mov   rdi,r12                             ; Move argc into first C arg....
+  mov   rsi,r13                             ; ... and argv into second.
   call  main                                ; Let's do some C...  
   call  _fini                               ; GCC destructors
 

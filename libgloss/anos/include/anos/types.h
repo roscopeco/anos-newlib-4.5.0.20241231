@@ -20,13 +20,15 @@ typedef struct {
 
 typedef void (*ThreadFunc)(void);
 
+typedef void (*ProcessEntrypointFunc)(void*);
+
 typedef struct {
     uintptr_t start;
     uint64_t len_bytes;
 } ProcessMemoryRegion;
 
 typedef struct {
-    ThreadFunc entry_point;
+    ProcessEntrypointFunc entry_point;
     uintptr_t stack_base;
     size_t stack_size;
     uint8_t region_count;

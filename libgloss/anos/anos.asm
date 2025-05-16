@@ -214,3 +214,25 @@ anos_syscall anos_kill_current_task, 16
 ;   rcx - trashed
 ;
 anos_syscall anos_unmap_virtual, 17
+
+; args:
+;   rdi - start
+;   rsi - end
+;   rdx - flags
+;
+; mods:
+;   rax - result
+;   r11 - trashed
+;   rcx - trashed
+;
+anos_syscall anos_create_region, 18
+
+; args:
+;   rdi - start
+;
+; mods:
+;   rax - result
+;   r11 - trashed
+;   rcx - trashed
+;
+anos_syscall anos_destroy_region, 19

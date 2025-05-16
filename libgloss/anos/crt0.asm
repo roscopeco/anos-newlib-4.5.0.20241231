@@ -20,22 +20,22 @@ section .text.init                        ; Linker needs to make sure this goes 
 
 ; Initialize C-land: Zero BSS, sort out arguments and call main
 _start:
-  mov   rcx,_bss_end                        ; Get end of .bss section (VMA)
-  mov   rax,_bss_start                      ; Get start of .bss section (VMA)
-  sub   rcx,rax                             ; Compute length of .bss (bytes) in RCX
-  shr   rcx,0x3                             ; Divide by 8 (we're zeroing qwords)
+;   mov   rcx,_bss_end                        ; Get end of .bss section (VMA)
+;   mov   rax,_bss_start                      ; Get start of .bss section (VMA)
+;   sub   rcx,rax                             ; Compute length of .bss (bytes) in RCX
+;   shr   rcx,0x3                             ; Divide by 8 (we're zeroing qwords)
 
-  test  rcx,rcx                             ; Do we have zero-size .bss?
-  jz    .done                               ; We're done if so...
+;   test  rcx,rcx                             ; Do we have zero-size .bss?
+;   jz    .done                               ; We're done if so...
 
-  mov   rbx,_bss_start                      ; bss start (VMA) into rbx
-.zero_bss_loop:
-  mov   qword [rbx],0x0                     ; Clear one qword
-  add   rbx,0x8                             ; Increment write pointer
-  dec   rcx                                 ; Decrement loop counter
-  jnz   .zero_bss_loop                      ; Loop until CX is zero
+;   mov   rbx,_bss_start                      ; bss start (VMA) into rbx
+; .zero_bss_loop:
+;   mov   qword [rbx],0x0                     ; Clear one qword
+;   add   rbx,0x8                             ; Increment write pointer
+;   dec   rcx                                 ; Decrement loop counter
+;   jnz   .zero_bss_loop                      ; Loop until CX is zero
 
-.done:
+; .done:
   ; Pop capability count and pointer for cap init
   pop   rdi                                 ; ... count
   pop   rsi                                 ; ... pointer

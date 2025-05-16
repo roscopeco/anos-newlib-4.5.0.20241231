@@ -43,6 +43,8 @@ typedef enum {
     SYSCALL_ID_END,
 } __attribute__((packed)) SyscallId;
 
+#define REGION_FLAG_AUTOMAP ((1))
+
 #ifdef DEBUG_INT_SYSCALLS
 #define anos_kprint anos_kprint_int
 #define anos_kputchar anos_kputchar_int
@@ -61,6 +63,8 @@ typedef enum {
 #define anos_find_named_channel anos_find_named_channel_int
 #define anos_kill_current_task anos_kill_current_task_int
 #define anos_unmap_virtual anos_unmap_virtual_int
+#define anos_create_region anos_create_region_int
+#define anos_destroy_region anos_destroy_region_int
 #else
 #define anos_kprint anos_kprint_syscall
 #define anos_kputchar anos_kputchar_syscall
@@ -79,6 +83,8 @@ typedef enum {
 #define anos_find_named_channel anos_find_named_channel_syscall
 #define anos_kill_current_task anos_kill_current_task_syscall
 #define anos_unmap_virtual anos_unmap_virtual_syscall
+#define anos_create_region anos_create_region_syscall
+#define anos_destroy_region anos_destroy_region_syscall
 #endif
 
 int anos_kprint_int(const char *msg);
@@ -135,5 +141,11 @@ uint64_t anos_kill_current_task_int();
 
 int anos_unmap_virtual_syscall(uint64_t size, uintptr_t base_address);
 int anos_unmap_virtual_int(uint64_t size, uintptr_t base_address);
+
+int anos_create_region_syscall(uintptr_t start, uintptr_t end, uint64_t flags);
+int anos_create_region_int(uintptr_t start, uintptr_t end, uint64_t flags);
+
+int anos_destroy_region_syscall(uintptr_t start);
+int anos_destroy_region_int(uintptr_t start);
 
 #endif //__ANOS_ANOS_SYSCALLS_H

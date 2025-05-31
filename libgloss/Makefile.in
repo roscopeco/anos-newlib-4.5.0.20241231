@@ -554,10 +554,10 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(SHELL) $(top_srcdir)/../mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = m68hc11/Makefile m68k/Makefile pa/Makefile \
-	mips/Makefile rs6000/Makefile cris/Makefile crx/Makefile \
-	mep/Makefile mt/Makefile m32c/Makefile spu/Makefile \
-	anos/Makefile sparc/libsys/Makefile
+CONFIG_CLEAN_FILES = anos/Makefile m68hc11/Makefile m68k/Makefile \
+	pa/Makefile mips/Makefile rs6000/Makefile cris/Makefile \
+	crx/Makefile mep/Makefile mt/Makefile m32c/Makefile \
+	spu/Makefile sparc/libsys/Makefile
 CONFIG_CLEAN_VPATH_FILES =
 @CONFIG_WINCE_TRUE@am__EXEEXT_1 = wince/stub.exe$(EXEEXT)
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(multilibtooldir)" \
@@ -3759,6 +3759,8 @@ $(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
+anos/Makefile: $(top_builddir)/config.status $(top_srcdir)/anos/Makefile.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 m68hc11/Makefile: $(top_builddir)/config.status $(top_srcdir)/m68hc11/Makefile.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 m68k/Makefile: $(top_builddir)/config.status $(top_srcdir)/m68k/Makefile.in
@@ -3780,8 +3782,6 @@ mt/Makefile: $(top_builddir)/config.status $(top_srcdir)/mt/Makefile.in
 m32c/Makefile: $(top_builddir)/config.status $(top_srcdir)/m32c/Makefile.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 spu/Makefile: $(top_builddir)/config.status $(top_srcdir)/spu/Makefile.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-anos/Makefile: $(top_builddir)/config.status $(top_srcdir)/anos/Makefile.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 sparc/libsys/Makefile: $(top_builddir)/config.status $(top_srcdir)/sparc/libsys/Makefile.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@

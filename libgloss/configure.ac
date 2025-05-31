@@ -47,6 +47,10 @@ host_makefile_frag=${srcdir}/config/default.mh
 target_makefile_frag=${srcdir}/config/default.mt
 
 case "${target}" in
+  *-*-anos)
+    AC_CONFIG_FILES([anos/Makefile])
+	subdirs="$subdirs anos"
+	;;
   aarch64*-*-*)
 	config_aarch64=true
 	config_testsuite=true
@@ -213,10 +217,6 @@ case "${target}" in
 	;;
   nios2-*-*)
 	config_nios2=true
-	;;
-  *-*-anos)
-    AC_CONFIG_FILES([anos/Makefile])
-	subdirs="$subdirs anos"
 	;;
 esac
 AC_SUBST(subdirs)

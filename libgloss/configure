@@ -2835,6 +2835,11 @@ host_makefile_frag=${srcdir}/config/default.mh
 target_makefile_frag=${srcdir}/config/default.mt
 
 case "${target}" in
+  *-*-anos)
+    ac_config_files="$ac_config_files anos/Makefile"
+
+	subdirs="$subdirs anos"
+	;;
   aarch64*-*-*)
 	config_aarch64=true
 	config_testsuite=true
@@ -3012,11 +3017,6 @@ case "${target}" in
 	;;
   nios2-*-*)
 	config_nios2=true
-	;;
-  *-*-anos)
-    ac_config_files="$ac_config_files anos/Makefile"
-
-	subdirs="$subdirs anos"
 	;;
 esac
 
@@ -6642,6 +6642,7 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
+    "anos/Makefile") CONFIG_FILES="$CONFIG_FILES anos/Makefile" ;;
     "m68hc11/Makefile") CONFIG_FILES="$CONFIG_FILES m68hc11/Makefile" ;;
     "m68k/Makefile") CONFIG_FILES="$CONFIG_FILES m68k/Makefile" ;;
     "pa/Makefile") CONFIG_FILES="$CONFIG_FILES pa/Makefile" ;;
@@ -6653,7 +6654,6 @@ do
     "mt/Makefile") CONFIG_FILES="$CONFIG_FILES mt/Makefile" ;;
     "m32c/Makefile") CONFIG_FILES="$CONFIG_FILES m32c/Makefile" ;;
     "spu/Makefile") CONFIG_FILES="$CONFIG_FILES spu/Makefile" ;;
-    "anos/Makefile") CONFIG_FILES="$CONFIG_FILES anos/Makefile" ;;
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "sparc/libsys/Makefile") CONFIG_FILES="$CONFIG_FILES sparc/libsys/Makefile" ;;
     "default-1") CONFIG_COMMANDS="$CONFIG_COMMANDS default-1" ;;

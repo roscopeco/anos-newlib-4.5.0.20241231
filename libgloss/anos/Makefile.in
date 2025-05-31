@@ -28,6 +28,16 @@ bindir = @bindir@
 libdir = @libdir@
 tooldir = $(exec_prefix)/$(target_alias)
 
+ifeq ($(findstring riscv64,$(target_alias)),riscv64)
+arch_src = $(srcdir)/arch/riscv64
+arch_asm_ext = .S
+else ifeq ($(findstring x86_64,$(target_alias)),x86_64)
+arch_src = $(srcdir)/arch/x86_64
+arch_asm_ext = .asm
+else
+$(error Unknown target_alias $(target_alias), can't select arch_src)
+endif
+
 # Multilib support variables.
 # TOP is used instead of MULTI{BUILD,SRC}TOP.
 MULTIDIRS =
@@ -68,30 +78,37 @@ SCRIPTS = anos.ld
 SYS_INCLUDES=
 PLAF_INCLUDES=  syscalls.h system.h types.h
 
-OBJS =  syscalls.o anos.o mkdir.o sleep.o version.o capability_init.o
-
-GOBJS=
+OBJS = syscalls.o anos.o mkdir.o sleep.o version.o capability_init.o
 
 CRT0 = crt0.o
-GCRT0= gcrt0.o
 
 #### Host specific Makefile fragment comes in here.
 @host_makefile_frag@
 
 all: $(CRT0) $(BSP)
 
-${CRT0}: $(srcdir)/crt0.asm
-	$(AS) $(ASFLAGS) -o $@ $<
-
 ${BSP}: $(OBJS)
 	${AR} ${ARFLAGS} $@ $(OBJS)
 	${RANLIB} $@
 
-anos.o: $(srcdir)/anos.asm
+ifeq ($(findstring riscv64,$(target_alias)),riscv64)
+
+anos.o: $(arch_src)/anos$(arch_asm_ext)
+	$(AS) $(ASFLAGS) -g -o $@ $<
+
+$(CRT0): $(arch_src)/crt0$(arch_asm_ext)
+	$(AS) $(ASFLAGS) -g -o $@ $<
+
+else ifeq ($(findstring x86_64,$(target_alias)),x86_64)
+
+anos.o: $(arch_src)/anos$(arch_asm_ext)
 	$(NASM) $(NASM_FLAGS) -f elf64 -F dwarf -g -o $@ $<
 
-crt0.o: $(srcdir)/crt0.asm
+$(CRT0): $(arch_src)/crt0$(arch_asm_ext)
 	$(NASM) $(NASM_FLAGS) -f elf64 -F dwarf -g -o $@ $<
+
+endif
+
 
 mkdir.o: $(srcdir)/mkdir.c
 	$(CC) $(CFLAGS_FOR_TARGET) -I$(srcdir)/include -O2 -g $(INCLUDES) -ffunction-sections -fdata-sections -c $(CFLAGS) $<

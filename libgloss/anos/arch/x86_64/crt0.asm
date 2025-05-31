@@ -5,8 +5,7 @@
 ; Copyright (c) 2025 Ross Bamford
 ; This is the entry-point for user programs.
 ;
-; There's still a lot TODO in here, it needs to run init
-; for static constructors, set up IO, and so on...
+; There's still stuff TODO, set up IO, and so on...
 ;
  
 bits 64
@@ -59,6 +58,3 @@ _start:
   call  _fini                               ; GCC destructors
 
   ; TODO we'll go bang here, we need an exit syscall!
-
-EMPTY_ARGS:
-    dq  0

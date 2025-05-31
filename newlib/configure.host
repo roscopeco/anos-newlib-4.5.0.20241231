@@ -973,5 +973,3 @@ case "${host_cpu}" in
 	fi
 	;;
 esac
-
-echo "@@@@@@@@@@@@@@@@@@@@@@@@ ${syscall_dir}"

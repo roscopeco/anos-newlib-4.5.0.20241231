@@ -3,6 +3,9 @@
  * anos - An Operating System
  *
  * Copyright (c) 2025 Ross Bamford
+ * 
+ * TODO this is RISC-V-specific right now, 
+ * either generalise it or move it!
  */
 
 #include <stddef.h>

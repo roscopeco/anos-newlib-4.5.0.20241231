@@ -87,6 +87,10 @@ typedef enum {
 #define anos_destroy_region anos_destroy_region_syscall
 #endif
 
+#define ANOS_MAP_VIRTUAL_FLAG_WRITE ((0x2))
+#define ANOS_MAP_VIRTUAL_FLAG_READ  ((0x1))
+#define ANOS_MAP_VIRTUAL_FLAG_EXEC  ((0x4))
+
 int anos_kprint_int(const char *msg);
 int anos_kprint_syscall(const char *msg);
 
@@ -105,8 +109,8 @@ int anos_task_sleep_current_int(uint64_t ticks);
 int64_t anos_create_process_syscall(ProcessCreateParams *params);
 int64_t anos_create_process_int(ProcessCreateParams *params);
 
-void *anos_map_virtual_syscall(uint64_t size, uintptr_t base_address);
-void *anos_map_virtual_int(uint64_t size, uintptr_t base_address);
+void *anos_map_virtual_syscall(uint64_t size, uintptr_t base_address, uint64_t flags);
+void *anos_map_virtual_int(uint64_t size, uintptr_t base_address, uint64_t flags);
 
 uint64_t anos_send_message_syscall(uint64_t channel_cookie, uint64_t tag,
                                    size_t buffer_size, void *buffer);

@@ -20,7 +20,7 @@ typedef struct {
 
 typedef void (*ThreadFunc)(void);
 
-typedef void (*ProcessEntrypointFunc)(void*);
+typedef void (*ProcessEntrypointFunc)(void);
 
 typedef struct {
     uintptr_t start;

@@ -17,6 +17,7 @@ _start:
     addi   sp, sp, 16            # advance the stack
 
     call   _anos_init_capabilities
+    call   _anos_libc_init_array
 
     # Pop argc into t0, argv into t1
     ld     t0, 0(sp)             # argc
@@ -27,12 +28,11 @@ _start:
     sd     s0, -8(sp)            # Push NULL frame pointer
     addi   sp, sp, -16           # Realign stack (8 + 8)
     
-    # TODO _init_array!
-
     mv     a0, t0                # argc
     mv     a1, t1                # argv
     call   main
-    # TODO _fini_array!
+
+    call   _anos_libc_fini_array
 
     # TODO: Proper syscall exit here
     j      .

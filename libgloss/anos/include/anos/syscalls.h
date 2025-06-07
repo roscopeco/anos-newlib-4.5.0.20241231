@@ -38,10 +38,25 @@ typedef enum {
     SYSCALL_ID_FIND_NAMED_CHANNEL,
     SYSCALL_ID_KILL_CURRENT_TASK,
     SYSCALL_ID_UNMAP_VIRTUAL,
+    SYSCALL_ID_CREATE_REGION,
+    SYSCALL_ID_DESTROY_REGION,
 
     // sentinel
     SYSCALL_ID_END,
 } __attribute__((packed)) SyscallId;
+
+typedef enum {
+    SYSCALL_OK = 0LL,
+    SYSCALL_FAILURE = -1LL,
+    SYSCALL_BAD_NUMBER = -2LL,
+    SYSCALL_NOT_IMPL = -3LL,
+    SYSCALL_BADARGS = -4LL,
+    SYSCALL_BAD_NAME = -5LL,
+
+    /* ... reserved ... */
+
+    SYSCALL_INCAPABLE = -254LL
+} SyscallResult;
 
 #define REGION_FLAG_AUTOMAP ((1))
 

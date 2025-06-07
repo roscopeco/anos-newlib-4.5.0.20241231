@@ -12,6 +12,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdnoreturn.h>
 
 #include "anos/system.h"
 #include "anos/types.h"
@@ -155,8 +156,8 @@ int anos_remove_channel_name_int(char *name);
 uint64_t anos_find_named_channel_syscall(char *name);
 uint64_t anos_find_named_channel_int(char *name);
 
-uint64_t anos_kill_current_task_syscall();
-uint64_t anos_kill_current_task_int();
+noreturn uint64_t anos_kill_current_task_syscall();
+noreturn uint64_t anos_kill_current_task_int();
 
 int anos_unmap_virtual_syscall(uint64_t size, uintptr_t base_address);
 int anos_unmap_virtual_int(uint64_t size, uintptr_t base_address);

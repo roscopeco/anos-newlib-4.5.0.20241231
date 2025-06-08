@@ -23,10 +23,6 @@ extern int errno;
 #define ALIGN_UP(x)   (((x) + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1))
 #define ALIGN_DOWN(x) ((x) & ~(PAGE_SIZE - 1))
 
-// These are your heap region limits (replace with actual values)
-#define HEAP_START (((uintptr_t)&_bss_end + 0x4000))
-#define HEAP_LIMIT (((uintptr_t)0x00000000bfffffff))
-
 extern void *_bss_end;
 static _Atomic uintptr_t __heap_end = (uintptr_t)&_bss_end + 0x40000;
 
@@ -146,7 +142,31 @@ int _wait(int *status) {
     return -1;
 }
 
+#include <string.h>
+
 int _write(int file, char *ptr, int len) {
+    const int olen = len;
+
+    if (file == 1) {
+        char buffer[1024];
+
+        while (len) {
+            if (len > 1023) {
+                memcpy(buffer, ptr, 1023);
+                buffer[1023] = '\0';
+                len -= 1023;
+            } else {
+                memcpy(buffer, ptr, len);
+                buffer[len] = '\0';
+                len = 0;
+            }
+
+            anos_kprint(buffer);
+        }
+
+        return olen;
+    }
+
     errno = ENOENT;
     return -1;
 }

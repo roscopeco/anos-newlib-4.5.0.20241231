@@ -75,6 +75,7 @@ SECTIONS
     _bss_start = .;
     . = ALIGN(4096);
     *(.bss*)
+    *(.sbss.*)
     *(COMMON)
     . = ALIGN(4096);
     _bss_end = .;
@@ -85,6 +86,7 @@ SECTIONS
     _data_start = .;
     . = ALIGN(4096);
     *(.data)
+    *(.data.*)
     . = ALIGN(4096);
     _data_end = .;
   } > DATA

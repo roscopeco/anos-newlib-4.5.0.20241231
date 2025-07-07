@@ -41,3 +41,5 @@ anos_syscall anos_kill_current_task, 16
 anos_syscall anos_unmap_virtual, 17
 anos_syscall anos_create_region, 18
 anos_syscall anos_destroy_region, 19
+anos_syscall anos_map_firmware_tables, 20
+anos_syscall anos_map_physical, 21

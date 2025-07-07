@@ -236,3 +236,25 @@ anos_syscall anos_create_region, 18
 ;   rcx - trashed
 ;
 anos_syscall anos_destroy_region, 19
+
+; args:
+;   rdi - base user-space address
+;
+; mods:
+;   rax - result
+;   r11 - trashed
+;   rcx - trashed
+;
+anos_syscall anos_map_firmware_tables, 20
+
+; args:
+;   rdi - physical address (must be page-aligned)
+;   rsi - base user-space address (must be page-aligned)
+;   rdx - size (must be a multiple of VM_PAGE_SIZE)
+;
+; mods:
+;   rax - result
+;   r11 - trashed
+;   rcx - trashed
+;
+anos_syscall anos_map_physical, 21

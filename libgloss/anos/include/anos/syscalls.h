@@ -41,6 +41,8 @@ typedef enum {
     SYSCALL_ID_UNMAP_VIRTUAL,
     SYSCALL_ID_CREATE_REGION,
     SYSCALL_ID_DESTROY_REGION,
+    SYSCALL_ID_MAP_FIRMWARE_TABLES,
+    SYSCALL_ID_MAP_PHYSICAL,
 
     // sentinel
     SYSCALL_ID_END,
@@ -81,6 +83,8 @@ typedef enum {
 #define anos_unmap_virtual anos_unmap_virtual_int
 #define anos_create_region anos_create_region_int
 #define anos_destroy_region anos_destroy_region_int
+#define anos_map_firmware_tables anos_map_firmware_tables_int
+#define anos_map_physical anos_map_physical_int
 #else
 #define anos_kprint anos_kprint_syscall
 #define anos_kputchar anos_kputchar_syscall
@@ -101,26 +105,28 @@ typedef enum {
 #define anos_unmap_virtual anos_unmap_virtual_syscall
 #define anos_create_region anos_create_region_syscall
 #define anos_destroy_region anos_destroy_region_syscall
+#define anos_map_firmware_tables anos_map_firmware_tables_syscall
+#define anos_map_physical anos_map_physical_syscall
 #endif
 
 #define ANOS_MAP_VIRTUAL_FLAG_WRITE ((0x2))
 #define ANOS_MAP_VIRTUAL_FLAG_READ  ((0x1))
 #define ANOS_MAP_VIRTUAL_FLAG_EXEC  ((0x4))
 
-int anos_kprint_int(const char *msg);
-int anos_kprint_syscall(const char *msg);
+SyscallResult anos_kprint_int(const char *msg);
+SyscallResult anos_kprint_syscall(const char *msg);
 
-int anos_kputchar_int(char chr);
-int anos_kputchar_syscall(char chr);
+SyscallResult anos_kputchar_int(char chr);
+SyscallResult anos_kputchar_syscall(char chr);
 
-int anos_create_thread_int(ThreadFunc func, uintptr_t stack_pointer);
-int anos_create_thread_syscall(ThreadFunc func, uintptr_t stack_pointer);
+SyscallResult anos_create_thread_int(ThreadFunc func, uintptr_t stack_pointer);
+SyscallResult anos_create_thread_syscall(ThreadFunc func, uintptr_t stack_pointer);
 
-int anos_get_mem_info_int(AnosMemInfo *meminfo);
-int anos_get_mem_info_syscall(AnosMemInfo *meminfo);
+SyscallResult anos_get_mem_info_int(AnosMemInfo *meminfo);
+SyscallResult anos_get_mem_info_syscall(AnosMemInfo *meminfo);
 
-int anos_task_sleep_current_syscall(uint64_t ticks);
-int anos_task_sleep_current_int(uint64_t ticks);
+SyscallResult anos_task_sleep_current_syscall(uint64_t ticks);
+SyscallResult anos_task_sleep_current_int(uint64_t ticks);
 
 int64_t anos_create_process_syscall(ProcessCreateParams *params);
 int64_t anos_create_process_int(ProcessCreateParams *params);
@@ -144,14 +150,14 @@ uint64_t anos_reply_message_int(uint64_t message_cookie, uint64_t reply);
 uint64_t anos_create_channel_syscall(void);
 uint64_t anos_create_channel_int(void);
 
-int anos_destroy_channel_syscall(uint64_t cookie);
-int anos_destroy_channel_int(uint64_t cookie);
+SyscallResult anos_destroy_channel_syscall(uint64_t cookie);
+SyscallResult anos_destroy_channel_int(uint64_t cookie);
 
-int anos_register_channel_name_syscall(uint64_t cookie, char *name);
-int anos_register_channel_name_int(uint64_t cookie, char *name);
+SyscallResult anos_register_channel_name_syscall(uint64_t cookie, char *name);
+SyscallResult anos_register_channel_name_int(uint64_t cookie, char *name);
 
-int anos_remove_channel_name_syscall(char *name);
-int anos_remove_channel_name_int(char *name);
+SyscallResult anos_remove_channel_name_syscall(char *name);
+SyscallResult anos_remove_channel_name_int(char *name);
 
 uint64_t anos_find_named_channel_syscall(char *name);
 uint64_t anos_find_named_channel_int(char *name);
@@ -159,13 +165,19 @@ uint64_t anos_find_named_channel_int(char *name);
 noreturn uint64_t anos_kill_current_task_syscall();
 noreturn uint64_t anos_kill_current_task_int();
 
-int anos_unmap_virtual_syscall(uint64_t size, uintptr_t base_address);
-int anos_unmap_virtual_int(uint64_t size, uintptr_t base_address);
+SyscallResult anos_unmap_virtual_syscall(uint64_t size, uintptr_t base_address);
+SyscallResult anos_unmap_virtual_int(uint64_t size, uintptr_t base_address);
 
-int anos_create_region_syscall(uintptr_t start, uintptr_t end, uint64_t flags);
-int anos_create_region_int(uintptr_t start, uintptr_t end, uint64_t flags);
+SyscallResult anos_create_region_syscall(uintptr_t start, uintptr_t end, uint64_t flags);
+SyscallResult anos_create_region_int(uintptr_t start, uintptr_t end, uint64_t flags);
 
-int anos_destroy_region_syscall(uintptr_t start);
-int anos_destroy_region_int(uintptr_t start);
+SyscallResult anos_destroy_region_syscall(uintptr_t start);
+SyscallResult anos_destroy_region_int(uintptr_t start);
+
+SyscallResult anos_map_firmware_tables_syscall(uintptr_t start);
+SyscallResult anos_map_firmware_tables_int(uintptr_t start);
+
+SyscallResult anos_map_physical_syscall(uintptr_t start_phys, void *start_virt, size_t size);
+SyscallResult anos_map_physical_int(uintptr_t start_phys, void *start_virt, size_t size);
 
 #endif //__ANOS_ANOS_SYSCALLS_H

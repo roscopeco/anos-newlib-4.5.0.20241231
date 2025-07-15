@@ -15,6 +15,7 @@ extern main,_init,_fini
 extern _bss_start, _bss_end               ; Linker defined symbols
 extern _anos_init_capabilities
 extern _anos_libc_init_array, _anos_libc_fini_array
+extern anos_kill_current_task_syscall
 
 section .text.init                        ; Linker needs to make sure this goes in first...
 
@@ -42,6 +43,7 @@ _start:
   mov   rsi,r13                             ; ... and argv into second.
   call  main                                ; Let's do some C...  
   call  _fini                               ; GCC destructors (old-style)
-  call   _anos_libc_fini_array              ; ... and new-style
+  call  _anos_libc_fini_array               ; ... and new-style
+  call  anos_kill_current_task_syscall
 
   ; TODO we'll go bang here, we need an exit syscall!

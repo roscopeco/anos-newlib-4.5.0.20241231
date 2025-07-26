@@ -43,3 +43,4 @@ anos_syscall anos_create_region, 18
 anos_syscall anos_destroy_region, 19
 anos_syscall anos_map_firmware_tables, 20
 anos_syscall anos_map_physical, 21
+anos_syscall anos_alloc_physical_pages, 22

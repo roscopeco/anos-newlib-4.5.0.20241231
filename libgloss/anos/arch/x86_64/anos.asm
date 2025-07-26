@@ -258,3 +258,13 @@ anos_syscall anos_map_firmware_tables, 20
 ;   rcx - trashed
 ;
 anos_syscall anos_map_physical, 21
+
+; args:
+;   rdi - size (must be page-aligned)
+;
+; mods:
+;   rax - result
+;   r11 - trashed
+;   rcx - trashed
+;
+anos_syscall anos_alloc_physical_pages, 22

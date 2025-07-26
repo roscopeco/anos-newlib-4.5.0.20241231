@@ -43,6 +43,7 @@ typedef enum {
     SYSCALL_ID_DESTROY_REGION,
     SYSCALL_ID_MAP_FIRMWARE_TABLES,
     SYSCALL_ID_MAP_PHYSICAL,
+    SYSCALL_ID_ALLOC_PHYSICAL_PAGES,
 
     // sentinel
     SYSCALL_ID_END,
@@ -85,6 +86,7 @@ typedef enum {
 #define anos_destroy_region anos_destroy_region_int
 #define anos_map_firmware_tables anos_map_firmware_tables_int
 #define anos_map_physical anos_map_physical_int
+#define anos_alloc_physical_pages anos_alloc_physical_pages_int
 #else
 #define anos_kprint anos_kprint_syscall
 #define anos_kputchar anos_kputchar_syscall
@@ -107,6 +109,7 @@ typedef enum {
 #define anos_destroy_region anos_destroy_region_syscall
 #define anos_map_firmware_tables anos_map_firmware_tables_syscall
 #define anos_map_physical anos_map_physical_syscall
+#define anos_alloc_physical_pages anos_alloc_physical_pages_syscall
 #endif
 
 #define ANOS_MAP_VIRTUAL_FLAG_WRITE ((0x2))
@@ -177,7 +180,10 @@ SyscallResult anos_destroy_region_int(uintptr_t start);
 SyscallResult anos_map_firmware_tables_syscall(uintptr_t start);
 SyscallResult anos_map_firmware_tables_int(uintptr_t start);
 
-SyscallResult anos_map_physical_syscall(uintptr_t start_phys, void *start_virt, size_t size);
-SyscallResult anos_map_physical_int(uintptr_t start_phys, void *start_virt, size_t size);
+SyscallResult anos_map_physical_syscall(uintptr_t start_phys, void *start_virt, size_t size, uint64_t flags);
+SyscallResult anos_map_physical_int(uintptr_t start_phys, void *start_virt, size_t size, uint64_t flags);
+
+uintptr_t anos_alloc_physical_pages_syscall(size_t size);
+uintptr_t anos_alloc_physical_pages_int(size_t size);
 
 #endif //__ANOS_ANOS_SYSCALLS_H

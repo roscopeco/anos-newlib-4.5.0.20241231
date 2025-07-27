@@ -268,3 +268,26 @@ anos_syscall anos_map_physical, 21
 ;   rcx - trashed
 ;
 anos_syscall anos_alloc_physical_pages, 22
+
+; args:
+;   rdi - bus:device:func (low 32-bits)
+;   rsi - MSI address pointer
+;   rdx - MSI data pointer
+;
+; mods:
+;   rax - vector (low 8-bits)
+;   r11 - trashed
+;   rcx - trashed
+;
+anos_syscall anos_allocate_interrupt_vector, 23
+
+; args:
+;   rdi - vector (low 8-bits)
+;   rsi - Event data pointer
+;
+; mods:
+;   rax - result
+;   r11 - trashed
+;   rcx - trashed
+;
+anos_syscall anos_wait_interrupt, 24

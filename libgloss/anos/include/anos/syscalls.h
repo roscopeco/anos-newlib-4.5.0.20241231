@@ -44,6 +44,8 @@ typedef enum {
     SYSCALL_ID_MAP_FIRMWARE_TABLES,
     SYSCALL_ID_MAP_PHYSICAL,
     SYSCALL_ID_ALLOC_PHYSICAL_PAGES,
+    SYSCALL_ID_ALLOC_INTERRUPT_VECTOR,
+    SYSCALL_ID_WAIT_INTERRUPT,
 
     // sentinel
     SYSCALL_ID_END,
@@ -87,6 +89,8 @@ typedef enum {
 #define anos_map_firmware_tables anos_map_firmware_tables_int
 #define anos_map_physical anos_map_physical_int
 #define anos_alloc_physical_pages anos_alloc_physical_pages_int
+#define anos_allocate_interrupt_vector anos_allocate_interrupt_vector_int
+#define anos_wait_interrupt anos_wait_interrupt_int
 #else
 #define anos_kprint anos_kprint_syscall
 #define anos_kputchar anos_kputchar_syscall
@@ -110,6 +114,8 @@ typedef enum {
 #define anos_map_firmware_tables anos_map_firmware_tables_syscall
 #define anos_map_physical anos_map_physical_syscall
 #define anos_alloc_physical_pages anos_alloc_physical_pages_syscall
+#define anos_allocate_interrupt_vector anos_allocate_interrupt_vector_syscall
+#define anos_wait_interrupt anos_wait_interrupt_syscall
 #endif
 
 #define ANOS_MAP_VIRTUAL_FLAG_WRITE ((0x2))
@@ -185,5 +191,11 @@ SyscallResult anos_map_physical_int(uintptr_t start_phys, void *start_virt, size
 
 uintptr_t anos_alloc_physical_pages_syscall(size_t size);
 uintptr_t anos_alloc_physical_pages_int(size_t size);
+
+uint8_t anos_allocate_interrupt_vector_syscall(uint32_t bus_device_func, uint64_t *msi_address, uint32_t *msi_data);
+uint8_t anos_allocate_interrupt_vector_int(uint32_t bus_device_func, uint64_t *msi_address, uint32_t *msi_data);
+
+SyscallResult anos_wait_interrupt_syscall(uint8_t vector, uint32_t *event_data);
+SyscallResult anos_wait_interrupt_int(uint8_t vector, uint32_t *event_data);
 
 #endif //__ANOS_ANOS_SYSCALLS_H

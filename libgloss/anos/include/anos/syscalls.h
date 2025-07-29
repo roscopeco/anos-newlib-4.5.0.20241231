@@ -10,6 +10,8 @@
 #ifndef __ANOS_ANOS_SYSCALLS_H
 #define __ANOS_ANOS_SYSCALLS_H
 
+#include <assert.h>
+
 #include <stddef.h>
 #include <stdint.h>
 #include <stdnoreturn.h>
@@ -52,17 +54,50 @@ typedef enum {
 } __attribute__((packed)) SyscallId;
 
 typedef enum {
-    SYSCALL_OK = 0LL,
-    SYSCALL_FAILURE = -1LL,
-    SYSCALL_BAD_NUMBER = -2LL,
-    SYSCALL_NOT_IMPL = -3LL,
-    SYSCALL_BADARGS = -4LL,
-    SYSCALL_BAD_NAME = -5LL,
+    SYSCALL_OK = 0ULL,
+    SYSCALL_FAILURE = -1ULL,
+    SYSCALL_BAD_NUMBER = -2ULL,
+    SYSCALL_NOT_IMPL = -3ULL,
+    SYSCALL_BADARGS = -4ULL,
+    SYSCALL_BAD_NAME = -5ULL,
 
-    /* ... reserved ... */
+    /* reserved */
+    SYSCALL_INCAPABLE = -254ULL
+} SyscallResultType;
 
-    SYSCALL_INCAPABLE = -254LL
-} SyscallResult;
+typedef struct {
+    SyscallResultType result;
+    uint8_t value;
+} SyscallResultU8;
+
+typedef struct {
+    SyscallResultType result;
+    uint64_t value;
+} SyscallResultU64;
+
+typedef struct {
+    SyscallResultType result;
+    int64_t value;
+} SyscallResultI64;
+
+typedef struct {
+    SyscallResultType result;
+    void* value;
+} SyscallResultP;
+
+typedef struct {
+    SyscallResultType result;
+    uintptr_t value;
+} SyscallResultA;
+
+typedef SyscallResultU64 SyscallResult;
+
+static_assert(sizeof(SyscallResultU8) == 16, "SyscallResultU8 must be 16 bytes");
+static_assert(sizeof(SyscallResultU64) == 16, "SyscallResultU64 must be 16 bytes");
+static_assert(sizeof(SyscallResultI64) == 16, "SyscallResultI64 must be 16 bytes");
+static_assert(sizeof(SyscallResultP) == 16, "SyscallResultP must be 16 bytes");
+static_assert(sizeof(SyscallResultA) == 16, "SyscallResultA must be 16 bytes");
+static_assert(sizeof(SyscallResult) == 16, "SyscallResult must be 16 bytes");
 
 #define REGION_FLAG_AUTOMAP ((1))
 
@@ -118,9 +153,15 @@ typedef enum {
 #define anos_wait_interrupt anos_wait_interrupt_syscall
 #endif
 
-#define ANOS_MAP_VIRTUAL_FLAG_WRITE ((0x2))
-#define ANOS_MAP_VIRTUAL_FLAG_READ  ((0x1))
-#define ANOS_MAP_VIRTUAL_FLAG_EXEC  ((0x4))
+#define ANOS_MAP_VIRTUAL_FLAG_READ      ((0x1))
+#define ANOS_MAP_VIRTUAL_FLAG_WRITE     ((0x2))
+#define ANOS_MAP_VIRTUAL_FLAG_EXEC      ((0x4))
+#define ANOS_MAP_VIRTUAL_FLAG_NOCACHE   ((0x8))
+
+#define ANOS_MAP_PHYSICAL_FLAG_READ     ((0x1))
+#define ANOS_MAP_PHYSICAL_FLAG_WRITE    ((0x2))
+#define ANOS_MAP_PHYSICAL_FLAG_EXEC     ((0x4))
+#define ANOS_MAP_PHYSICAL_FLAG_NOCACHE  ((0x8))
 
 SyscallResult anos_kprint_int(const char *msg);
 SyscallResult anos_kprint_syscall(const char *msg);
@@ -137,27 +178,27 @@ SyscallResult anos_get_mem_info_syscall(AnosMemInfo *meminfo);
 SyscallResult anos_task_sleep_current_syscall(uint64_t ticks);
 SyscallResult anos_task_sleep_current_int(uint64_t ticks);
 
-int64_t anos_create_process_syscall(ProcessCreateParams *params);
-int64_t anos_create_process_int(ProcessCreateParams *params);
+SyscallResultI64 anos_create_process_syscall(ProcessCreateParams *params);
+SyscallResultI64 anos_create_process_int(ProcessCreateParams *params);
 
-void *anos_map_virtual_syscall(uint64_t size, uintptr_t base_address, uint64_t flags);
-void *anos_map_virtual_int(uint64_t size, uintptr_t base_address, uint64_t flags);
+SyscallResultP anos_map_virtual_syscall(uint64_t size, uintptr_t base_address, uint64_t flags);
+SyscallResultP anos_map_virtual_int(uint64_t size, uintptr_t base_address, uint64_t flags);
 
-uint64_t anos_send_message_syscall(uint64_t channel_cookie, uint64_t tag,
+SyscallResult anos_send_message_syscall(uint64_t channel_cookie, uint64_t tag,
                                    size_t buffer_size, void *buffer);
-uint64_t anos_send_message_int(uint64_t channel_cookie, uint64_t tag,
+SyscallResult anos_send_message_int(uint64_t channel_cookie, uint64_t tag,
                                size_t buffer_size, void *buffer);
 
-uint64_t anos_recv_message_syscall(uint64_t channel_cookie, uint64_t *tag,
+SyscallResult anos_recv_message_syscall(uint64_t channel_cookie, uint64_t *tag,
                                    size_t *buffer_size, void *buffer);
-uint64_t anos_recv_message_int(uint64_t channel_cookie, uint64_t *tag,
+SyscallResult anos_recv_message_int(uint64_t channel_cookie, uint64_t *tag,
                                size_t *buffer_size, void *buffer);
 
-uint64_t anos_reply_message_syscall(uint64_t message_cookie, uint64_t reply);
-uint64_t anos_reply_message_int(uint64_t message_cookie, uint64_t reply);
+SyscallResult anos_reply_message_syscall(uint64_t message_cookie, uint64_t reply);
+SyscallResult anos_reply_message_int(uint64_t message_cookie, uint64_t reply);
 
-uint64_t anos_create_channel_syscall(void);
-uint64_t anos_create_channel_int(void);
+SyscallResult anos_create_channel_syscall(void);
+SyscallResult anos_create_channel_int(void);
 
 SyscallResult anos_destroy_channel_syscall(uint64_t cookie);
 SyscallResult anos_destroy_channel_int(uint64_t cookie);
@@ -168,11 +209,11 @@ SyscallResult anos_register_channel_name_int(uint64_t cookie, char *name);
 SyscallResult anos_remove_channel_name_syscall(char *name);
 SyscallResult anos_remove_channel_name_int(char *name);
 
-uint64_t anos_find_named_channel_syscall(char *name);
-uint64_t anos_find_named_channel_int(char *name);
+SyscallResult anos_find_named_channel_syscall(char *name);
+SyscallResult anos_find_named_channel_int(char *name);
 
-noreturn uint64_t anos_kill_current_task_syscall();
-noreturn uint64_t anos_kill_current_task_int();
+noreturn SyscallResult anos_kill_current_task_syscall();
+noreturn SyscallResult anos_kill_current_task_int();
 
 SyscallResult anos_unmap_virtual_syscall(uint64_t size, uintptr_t base_address);
 SyscallResult anos_unmap_virtual_int(uint64_t size, uintptr_t base_address);
@@ -189,11 +230,11 @@ SyscallResult anos_map_firmware_tables_int(uintptr_t start);
 SyscallResult anos_map_physical_syscall(uintptr_t start_phys, void *start_virt, size_t size, uint64_t flags);
 SyscallResult anos_map_physical_int(uintptr_t start_phys, void *start_virt, size_t size, uint64_t flags);
 
-uintptr_t anos_alloc_physical_pages_syscall(size_t size);
-uintptr_t anos_alloc_physical_pages_int(size_t size);
+SyscallResultA anos_alloc_physical_pages_syscall(size_t size);
+SyscallResultA anos_alloc_physical_pages_int(size_t size);
 
-uint8_t anos_allocate_interrupt_vector_syscall(uint32_t bus_device_func, uint64_t *msi_address, uint32_t *msi_data);
-uint8_t anos_allocate_interrupt_vector_int(uint32_t bus_device_func, uint64_t *msi_address, uint32_t *msi_data);
+SyscallResultU8 anos_allocate_interrupt_vector_syscall(uint32_t bus_device_func, uint64_t *msi_address, uint32_t *msi_data);
+SyscallResultU8 anos_allocate_interrupt_vector_int(uint32_t bus_device_func, uint64_t *msi_address, uint32_t *msi_data);
 
 SyscallResult anos_wait_interrupt_syscall(uint8_t vector, uint32_t *event_data);
 SyscallResult anos_wait_interrupt_int(uint8_t vector, uint32_t *event_data);

@@ -108,7 +108,7 @@ caddr_t _sbrk(int increment) {
             //      smaller than page-size, which don't require a region / will
             //      recreate the same region multiple times...
             //
-            if (anos_create_region(aligned_start, aligned_end, REGION_FLAG_AUTOMAP) < 0) {
+            if (anos_create_region(aligned_start, aligned_end, REGION_FLAG_AUTOMAP).result != SYSCALL_OK) {
                 errno = ENOMEM;
                 return (void*)-1;
             }

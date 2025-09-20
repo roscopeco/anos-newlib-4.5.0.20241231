@@ -47,3 +47,5 @@ core
 
 lost+found
 !newlib/libc/include/sys/config.h
+.idea
+build

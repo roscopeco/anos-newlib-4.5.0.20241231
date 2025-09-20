@@ -48,6 +48,8 @@ typedef enum {
     SYSCALL_ID_ALLOC_PHYSICAL_PAGES,
     SYSCALL_ID_ALLOC_INTERRUPT_VECTOR,
     SYSCALL_ID_WAIT_INTERRUPT,
+    SYSCALL_ID_READ_KERNEL_LOG,
+    SYSCALL_ID_GET_FRAMEBUFFER_PHYS,
 
     // sentinel
     SYSCALL_ID_END,
@@ -99,6 +101,15 @@ static_assert(sizeof(SyscallResultP) == 16, "SyscallResultP must be 16 bytes");
 static_assert(sizeof(SyscallResultA) == 16, "SyscallResultA must be 16 bytes");
 static_assert(sizeof(SyscallResult) == 16, "SyscallResult must be 16 bytes");
 
+typedef struct {
+    uintptr_t physical_address;
+    uint32_t width;
+    uint32_t height;
+    uint32_t pitch;         // Bytes per row
+    uint32_t bpp;
+    uint32_t reserved[3];
+} AnosFramebufferInfo;
+
 #define REGION_FLAG_AUTOMAP ((1))
 
 #ifdef DEBUG_INT_SYSCALLS
@@ -124,8 +135,10 @@ static_assert(sizeof(SyscallResult) == 16, "SyscallResult must be 16 bytes");
 #define anos_map_firmware_tables anos_map_firmware_tables_int
 #define anos_map_physical anos_map_physical_int
 #define anos_alloc_physical_pages anos_alloc_physical_pages_int
-#define anos_allocate_interrupt_vector anos_allocate_interrupt_vector_int
+#define anos_alloc_interrupt_vector anos_alloc_interrupt_vector_int
 #define anos_wait_interrupt anos_wait_interrupt_int
+#define anos_read_kernel_log anos_read_kernel_log_int
+#define anos_get_framebuffer_phys anos_get_framebuffer_phys_int
 #else
 #define anos_kprint anos_kprint_syscall
 #define anos_kputchar anos_kputchar_syscall
@@ -149,8 +162,10 @@ static_assert(sizeof(SyscallResult) == 16, "SyscallResult must be 16 bytes");
 #define anos_map_firmware_tables anos_map_firmware_tables_syscall
 #define anos_map_physical anos_map_physical_syscall
 #define anos_alloc_physical_pages anos_alloc_physical_pages_syscall
-#define anos_allocate_interrupt_vector anos_allocate_interrupt_vector_syscall
+#define anos_alloc_interrupt_vector anos_alloc_interrupt_vector_syscall
 #define anos_wait_interrupt anos_wait_interrupt_syscall
+#define anos_read_kernel_log anos_read_kernel_log_syscall
+#define anos_get_framebuffer_phys anos_get_framebuffer_phys_syscall
 #endif
 
 #define ANOS_MAP_VIRTUAL_FLAG_READ      ((0x1))
@@ -233,10 +248,16 @@ SyscallResult anos_map_physical_int(uintptr_t start_phys, void *start_virt, size
 SyscallResultA anos_alloc_physical_pages_syscall(size_t size);
 SyscallResultA anos_alloc_physical_pages_int(size_t size);
 
-SyscallResultU8 anos_allocate_interrupt_vector_syscall(uint32_t bus_device_func, uint64_t *msi_address, uint32_t *msi_data);
-SyscallResultU8 anos_allocate_interrupt_vector_int(uint32_t bus_device_func, uint64_t *msi_address, uint32_t *msi_data);
+SyscallResultU8 anos_alloc_interrupt_vector_syscall(uint32_t bus_device_func, uint64_t *msi_address, uint32_t *msi_data);
+SyscallResultU8 anos_alloc_interrupt_vector_int(uint32_t bus_device_func, uint64_t *msi_address, uint32_t *msi_data);
 
 SyscallResult anos_wait_interrupt_syscall(uint8_t vector, uint32_t *event_data);
 SyscallResult anos_wait_interrupt_int(uint8_t vector, uint32_t *event_data);
+
+SyscallResult anos_read_kernel_log_syscall(void *buffer, size_t buffer_size, uint64_t flags);
+SyscallResult anos_read_kernel_log_int(void *buffer, size_t buffer_size, uint64_t flags);
+
+SyscallResult anos_get_framebuffer_phys_syscall(AnosFramebufferInfo *info);
+SyscallResult anos_get_framebuffer_phys_int(AnosFramebufferInfo *info);
 
 #endif //__ANOS_ANOS_SYSCALLS_H

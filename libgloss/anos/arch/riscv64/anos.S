@@ -44,3 +44,7 @@ anos_syscall anos_destroy_region, 19
 anos_syscall anos_map_firmware_tables, 20
 anos_syscall anos_map_physical, 21
 anos_syscall anos_alloc_physical_pages, 22
+anos_syscall anos_alloc_interrupt_vector, 23
+anos_syscall anos_alloc_wait_interrupt, 24
+anos_syscall anos_read_kernel_log, 25
+anos_syscall anos_get_framebuffer_phys, 26

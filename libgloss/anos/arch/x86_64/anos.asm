@@ -33,7 +33,8 @@ global %1_syscall, %1_int
 ;   rdi - message pointer
 ;
 ; mods:
-;   rax - result
+;   rax - SYSCALL_RESULT
+;   rdx - trashed
 ;   r11 - trashed
 ;   rcx - trashed
 ;   
@@ -43,7 +44,8 @@ anos_syscall anos_kprint, 1
 ;   rdi - character (low byte)
 ;
 ; mods:
-;   rax - result
+;   rax - SYSCALL_RESULT
+;   rdx - trashed
 ;   r11 - trashed
 ;   rcx - trashed
 ;   
@@ -54,7 +56,8 @@ anos_syscall anos_kputchar, 2
 ;   rsi - user stack
 ;
 ; mods:
-;   rax - result
+;   rax - SYSCALL_RESULT
+;   rdx - trashed
 ;   r11 - trashed
 ;   rcx - trashed
 ;   
@@ -64,7 +67,8 @@ anos_syscall anos_create_thread, 3
 ;   rdi - AnosMemInfo pointer
 ;
 ; mods:
-;   rax - result
+;   rax - SYSCALL_RESULT
+;   rdx - trashed
 ;   r11 - trashed
 ;   rcx - trashed
 ;   
@@ -74,7 +78,8 @@ anos_syscall anos_get_mem_info, 4
 ;   rdi - nanos count
 ;
 ; mods:
-;   rax - result
+;   rax - SYSCALL_RESULT
+;   rdx - trashed
 ;   r11 - trashed
 ;   rcx - trashed
 ;   
@@ -88,7 +93,8 @@ anos_syscall anos_task_sleep_current, 5
 ;   r8  - entry point
 ;
 ; mods:
-;   rax - result
+;   rax - SYSCALL_RESULT
+;   rdx - trashed
 ;   r11 - trashed
 ;   rcx - trashed
 ;   
@@ -99,7 +105,8 @@ anos_syscall anos_create_process, 6
 ;   rsi - virtual_base
 ;
 ; mods:
-;   rax - result
+;   rax - SYSCALL_RESULT
+;   rdx - trashed
 ;   r11 - trashed
 ;   rcx - trashed
 ;
@@ -112,7 +119,8 @@ anos_syscall anos_map_virtual, 7
 ;   r10 - buffer pointer
 ;
 ; mods:
-;   rax - result
+;   rax - SYSCALL_RESULT
+;   rdx - trashed
 ;   r11 - trashed
 ;   rcx - trashed
 ;
@@ -125,7 +133,8 @@ anos_syscall anos_send_message, 8
 ;   r10 - buffer pointer
 ;
 ; mods:
-;   rax - message cookie
+;   rax - SYSCALL_RESULT
+;   rdx - message cookie
 ;   r11 - trashed
 ;   rcx - trashed
 ;
@@ -137,7 +146,8 @@ anos_syscall anos_recv_message, 9
 ;   rdx - arg1
 ;
 ; mods:
-;   rax - message cookie
+;   rax - SYSCALL_RESULT
+;   rdx - message cookie
 ;   r11 - trashed
 ;   rcx - trashed
 ;
@@ -147,7 +157,8 @@ anos_syscall anos_reply_message, 10
 ;   none
 ;
 ; mods:
-;   rax - channel cookie, or 0 on failure
+;   rax - SYSCALL_RESULT
+;   rdx - channel cookie, or 0 on failure
 ;   r11 - trashed
 ;   rcx - trashed
 ;
@@ -157,7 +168,8 @@ anos_syscall anos_create_channel, 11
 ;   rdi - cookie
 ;
 ; mods:
-;   rax - 0 on success, or negative on failure
+;   rax - SYSCALL_RESULT
+;   rdx - 0 on success, or negative on failure
 ;   r11 - trashed
 ;   rcx - trashed
 ;
@@ -168,7 +180,8 @@ anos_syscall anos_destroy_channel, 12
 ;   rsi - name (char*)
 ;
 ; mods:
-;   rax - 0 on success, or negative on failure
+;   rax - SYSCALL_RESULT
+;   rdx - 0 on success, or negative on failure
 ;   r11 - trashed
 ;   rcx - trashed
 ;
@@ -178,7 +191,8 @@ anos_syscall anos_register_channel_name, 13
 ;   rdi - name (char*)
 ;
 ; mods:
-;   rax - 0 on success, or negative on failure
+;   rax - SYSCALL_RESULT
+;   rdx - 0 on success, or negative on failure
 ;   r11 - trashed
 ;   rcx - trashed
 ;
@@ -188,7 +202,8 @@ anos_syscall anos_remove_channel_name, 14
 ;   rdi - name (char*)
 ;
 ; mods:
-;   rax - cookie on success, or 0 on failure
+;   rax - SYSCALL_RESULT
+;   rdx - cookie on success, or 0 on failure
 ;   r11 - trashed
 ;   rcx - trashed
 ;
@@ -198,7 +213,8 @@ anos_syscall anos_find_named_channel, 15
 ;   none
 ;
 ; mods:
-;   rax - noreturn on success, 0 on failure
+;   rax - SYSCALL_RESULT (noreturn on success)
+;   rdx - trashed
 ;   r11 - trashed
 ;   rcx - trashed
 ;
@@ -209,7 +225,8 @@ anos_syscall anos_kill_current_task, 16
 ;   rsi - virtual_base
 ;
 ; mods:
-;   rax - result
+;   rax - SYSCALL_RESULT
+;   rdx - trashed
 ;   r11 - trashed
 ;   rcx - trashed
 ;
@@ -221,7 +238,8 @@ anos_syscall anos_unmap_virtual, 17
 ;   rdx - flags
 ;
 ; mods:
-;   rax - result
+;   rax - SYSCALL_RESULT
+;   rdx - trashed
 ;   r11 - trashed
 ;   rcx - trashed
 ;
@@ -231,7 +249,8 @@ anos_syscall anos_create_region, 18
 ;   rdi - start
 ;
 ; mods:
-;   rax - result
+;   rax - SYSCALL_RESULT
+;   rdx - trashed
 ;   r11 - trashed
 ;   rcx - trashed
 ;
@@ -241,7 +260,8 @@ anos_syscall anos_destroy_region, 19
 ;   rdi - base user-space address
 ;
 ; mods:
-;   rax - result
+;   rax - SYSCALL_RESULT
+;   rdx - trashed
 ;   r11 - trashed
 ;   rcx - trashed
 ;
@@ -253,7 +273,8 @@ anos_syscall anos_map_firmware_tables, 20
 ;   rdx - size (must be a multiple of VM_PAGE_SIZE)
 ;
 ; mods:
-;   rax - result
+;   rax - SYSCALL_RESULT
+;   rdx - trashed
 ;   r11 - trashed
 ;   rcx - trashed
 ;
@@ -263,7 +284,8 @@ anos_syscall anos_map_physical, 21
 ;   rdi - size (must be page-aligned)
 ;
 ; mods:
-;   rax - result
+;   rax - SYSCALL_RESULT
+;   rdx - trashed
 ;   r11 - trashed
 ;   rcx - trashed
 ;
@@ -275,19 +297,45 @@ anos_syscall anos_alloc_physical_pages, 22
 ;   rdx - MSI data pointer
 ;
 ; mods:
-;   rax - vector (low 8-bits)
+;   rax - SYSCALL_RESULT
+;   rdx - vector (low 8-bits)
 ;   r11 - trashed
 ;   rcx - trashed
 ;
-anos_syscall anos_allocate_interrupt_vector, 23
+anos_syscall anos_alloc_interrupt_vector, 23
 
 ; args:
 ;   rdi - vector (low 8-bits)
 ;   rsi - Event data pointer
 ;
 ; mods:
-;   rax - result
+;   rax - SYSCALL_RESULT
+;   rdx - trashed
 ;   r11 - trashed
 ;   rcx - trashed
 ;
 anos_syscall anos_wait_interrupt, 24
+
+; args:
+;   rdi - buffer pointer
+;   rsi - buffer size
+;   rdx - flags
+;
+; mods:
+;   rax - SYSCALL_RESULT
+;   rdx - byte count
+;   r11 - trashed
+;   rcx - trashed
+;
+anos_syscall anos_read_kernel_log, 25
+
+; args:
+;   rdi - AnosFramebufferInfo *
+;
+; mods:
+;   rax - SYSCALL_RESULT
+;   rdx - trashed
+;   r11 - trashed
+;   rcx - trashed
+;
+anos_syscall anos_get_framebuffer_phys, 26

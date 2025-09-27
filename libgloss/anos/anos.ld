@@ -29,7 +29,7 @@ SECTIONS
       __preinit_array_end = .;
     . = ALIGN(16);
       __init_array_start = .;
-    KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*))) /* init_array... */
+    KEEP (*(SORT_BY_INIT_PRIORITY(.init_array*))) /* init_array... */
     KEEP(*(SORT_BY_INIT_PRIORITY(.ctors.*)))   /* followed by ctors with priority */
     KEEP (*(.init_array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o ) .ctors))
     KEEP (*(.init_array*))
@@ -38,7 +38,7 @@ SECTIONS
       __fini_array_start = .;
     KEEP(*(SORT_BY_INIT_PRIORITY(.dtors.*)))   /* dtors with priority go first */
     KEEP (*(.fini_array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o ) .dtors))
-    KEEP (*(SORT_BY_INIT_PRIORITY(.fini_array.*))) /* ...followed by fini_array */
+    KEEP (*(SORT_BY_INIT_PRIORITY(.fini_array*))) /* ...followed by fini_array */
       __fini_array_end = .;
 
     . = ALIGN(16);
@@ -75,7 +75,7 @@ SECTIONS
     _bss_start = .;
     . = ALIGN(4096);
     *(.bss*)
-    *(.sbss.*)
+    *(.sbss*)
     *(COMMON)
     . = ALIGN(4096);
     _bss_end = .;
@@ -85,8 +85,8 @@ SECTIONS
   {
     _data_start = .;
     . = ALIGN(4096);
-    *(.data)
-    *(.data.*)
+    *(.data*)
+    *(.sdata*)
     . = ALIGN(4096);
     _data_end = .;
   } > DATA

@@ -184,8 +184,8 @@ SyscallResult anos_kprint_syscall(const char *msg);
 SyscallResult anos_kputchar_int(char chr);
 SyscallResult anos_kputchar_syscall(char chr);
 
-SyscallResult anos_create_thread_int(ThreadFunc func, uintptr_t stack_pointer);
-SyscallResult anos_create_thread_syscall(ThreadFunc func, uintptr_t stack_pointer);
+SyscallResult anos_create_thread_int(ThreadFunc func, uintptr_t stack_pointer, TaskClass task_class);
+SyscallResult anos_create_thread_syscall(ThreadFunc func, uintptr_t stack_pointer, TaskClass task_class);
 
 SyscallResult anos_get_mem_info_int(AnosMemInfo *meminfo);
 SyscallResult anos_get_mem_info_syscall(AnosMemInfo *meminfo);
